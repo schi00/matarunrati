@@ -7,20 +7,129 @@
     <style>
         body {
             margin: 0;
-            overflow: auto; /* Permitir scroll para el contenido de la web */
+            overflow-x: hidden;
             background-color: black;
             color: white;
             font-family: sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
             text-align: center;
-            position: relative; /* Para posicionar el contenedor principal */
+            position: relative;
+            padding-top: 60px;
+        }
+
+        nav {
+            background-color: black;
+            color: white;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 20;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: start;
+        }
+
+        nav li {
+            display: inline-block;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+        }
+
+        nav a:hover {
+            background-color: #333;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-btn {
+            background-color: black;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 0; /* Ocultar el texto "Menú" */
+            line-height: 0;
+        }
+
+        .dropdown-btn:focus {
+            outline: none; /* Eliminar el foco azul */
+        }
+
+        .hamburger {
+            width: 30px;
+            height: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .bar {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: white;
+            transition: 0.3s;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: black;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            transform-origin: top left; /* Punto de origen para la animación */
+            transition: transform 0.3s ease-in-out; /* Animación de la aparición */
+            transform: scaleY(0); /* Inicialmente oculto y con escala 0 */
+        }
+
+        .dropdown.open .dropdown-content {
+            display: block;
+            transform: scaleY(1); /* Escala verticalmente para mostrar */
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #333;
+        }
+
+        .dropdown.open .hamburger .bar:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .dropdown.open .hamburger .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .dropdown.open .hamburger .bar:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
         }
 
         .animation-container {
-            position: absolute; /* Cubrir toda la pantalla */
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -30,14 +139,14 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 10; /* Asegurarse de que esté encima del contenido */
+            z-index: 10;
         }
 
         .animated-text {
             font-size: 2em;
-            white-space: nowrap; /* Evita que el texto se rompa en líneas */
+            white-space: nowrap;
             opacity: 0;
-            transition: opacity 1s ease-in-out; /* Transición suave para la aparición */
+            transition: opacity 1s ease-in-out;
         }
 
         .animated-text.visible {
@@ -46,8 +155,8 @@
 
         #click-here-container {
             margin-top: 20px;
-            opacity: 0; /* Inicialmente invisible */
-            transition: opacity 1s ease-in-out; /* Transición para la aparición del botón */
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
         }
 
         #click-here-container.visible {
@@ -76,7 +185,8 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
-            display: none; /* Ocultar inicialmente el contenido */
+            display: none;
+            margin-top: 20px;
         }
 
         h1 {
@@ -101,6 +211,25 @@
     </style>
 </head>
 <body>
+    <nav>
+        <ul>
+            <li class="dropdown">
+                <button class="dropdown-btn" id="dropdownBtn">
+                    <div class="hamburger">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </div>
+                </button>
+                <div class="dropdown-content">
+                    <a href="#">Inicio</a>
+                    <a href="#">Nosotros</a>
+                    <a href="#">Contacto</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
     <div class="animation-container" id="animationContainer">
         <div id="line1" class="animated-text">¿Te interesa</div>
         <div id="line2" class="animated-text">matar un rati?</div>
@@ -127,7 +256,9 @@
             const clickHereContainer = document.getElementById('click-here-container');
             const line1 = document.getElementById('line1');
             const line2 = document.getElementById('line2');
-            const delay = 1000; // Milisegundos de retraso entre líneas
+            const dropdownBtn = document.getElementById('dropdownBtn');
+            const dropdown = document.querySelector('.dropdown');
+            const delay = 1000;
             let animationFinished = false;
 
             setTimeout(() => {
@@ -137,7 +268,7 @@
                     setTimeout(() => {
                         clickHereContainer.classList.add('visible');
                         animationFinished = true;
-                    }, delay); // Mostrar el botón después de la segunda línea
+                    }, delay);
                 }, delay);
             }, delay);
 
@@ -148,8 +279,20 @@
                     contentContainer.style.display = 'block';
                     document.body.style.backgroundColor = '#fff';
                     document.body.style.color = '#333';
-                    document.body.style.justifyContent = 'flex-start';
-                    document.body.style.alignItems = 'flex-start';
+                    document.body.style.justifyContent = 'center';
+                    document.body.style.alignItems = 'center';
+                }
+            });
+
+            // JavaScript para el desplegable
+            dropdownBtn.addEventListener('click', function() {
+                dropdown.classList.toggle('open');
+            });
+
+            // Cerrar el desplegable si se hace clic fuera de él
+            window.addEventListener('click', function(event) {
+                if (!event.target.matches('#dropdownBtn') && dropdown.classList.contains('open')) {
+                    dropdown.classList.remove('open');
                 }
             });
         });
