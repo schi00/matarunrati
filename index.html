@@ -6,13 +6,68 @@
     <title>¿Por Qué Matar un Rati?</title>
     <style>
         body {
+            margin: 0;
+            overflow: auto; /* Permitir scroll para el contenido de la web */
+            background-color: black;
+            color: white;
             font-family: sans-serif;
-            background-color: #f4f4f4;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            text-align: center;
+            position: relative; /* Para posicionar el contenedor principal */
+        }
+
+        .animation-container {
+            position: absolute; /* Cubrir toda la pantalla */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10; /* Asegurarse de que esté encima del contenido */
+        }
+
+        .animated-text {
+            font-size: 2em;
+            white-space: nowrap; /* Evita que el texto se rompa en líneas */
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Transición suave para la aparición */
+        }
+
+        .animated-text.visible {
+            opacity: 1;
+        }
+
+        #click-here-container {
+            margin-top: 20px;
+            opacity: 0; /* Inicialmente invisible */
+            transition: opacity 1s ease-in-out; /* Transición para la aparición del botón */
+        }
+
+        #click-here-container.visible {
+            opacity: 1;
+        }
+
+        #click-here {
+            font-size: 1.5em;
+            color: #eee;
+            text-decoration: none;
+            border: 2px solid #eee;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            cursor: pointer;
+        }
+
+        #click-here:hover {
+            background-color: #eee;
+            color: black;
         }
 
         .container {
@@ -21,6 +76,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
+            display: none; /* Ocultar inicialmente el contenido */
         }
 
         h1 {
@@ -45,15 +101,58 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="animation-container" id="animationContainer">
+        <div id="line1" class="animated-text">¿Te interesa</div>
+        <div id="line2" class="animated-text">matar un rati?</div>
+        <div id="click-here-container">
+            <a href="#" id="click-here">Hace click aquí</a>
+        </div>
+    </div>
+    <div class="container" id="contentContainer">
         <h1>¿Por Qué Matar un Rati?</h1>
         <div class="joke">
             Les voy a explicar por que matar un rati puede mejorar tu dia de manera significativa!
             <br><br>
             aqui vamos!
-			<br><br>
-			<img src="rati.jpg">
+            <br><br>
+            <img src="rati.jpg">
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const animationContainer = document.getElementById('animationContainer');
+            const contentContainer = document.getElementById('contentContainer');
+            const clickHereLink = document.getElementById('click-here');
+            const clickHereContainer = document.getElementById('click-here-container');
+            const line1 = document.getElementById('line1');
+            const line2 = document.getElementById('line2');
+            const delay = 1000; // Milisegundos de retraso entre líneas
+            let animationFinished = false;
+
+            setTimeout(() => {
+                line1.classList.add('visible');
+                setTimeout(() => {
+                    line2.classList.add('visible');
+                    setTimeout(() => {
+                        clickHereContainer.classList.add('visible');
+                        animationFinished = true;
+                    }, delay); // Mostrar el botón después de la segunda línea
+                }, delay);
+            }, delay);
+
+            clickHereLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                if (animationFinished) {
+                    animationContainer.style.display = 'none';
+                    contentContainer.style.display = 'block';
+                    document.body.style.backgroundColor = '#fff';
+                    document.body.style.color = '#333';
+                    document.body.style.justifyContent = 'flex-start';
+                    document.body.style.alignItems = 'flex-start';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
